@@ -1,0 +1,146 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     find(array, callback[, optionalThisObject])
+
+  // CALLBACK PARAMETERS:
+  //     currentValue
+  //     currentIndex
+  //     array
+
+  // RETURN VALUE
+  //     returns a single value as an index
+  //     of the first element that satisfies fn callback
+  //     returns -1 if no value passes the test
+
+  /* APPLICATION CODE */
+  function findIndex(array, callback, optionalThisObject) {
+    var findIndexFunction = callback;
+    var length = array.length;
+
+    if (optionalThisObject) {
+      findIndexFunction = callback.bind(optionalThisObject);
+    }
+
+    for (var i = 0; i < length; i++) {
+      if (findIndexFunction(array[i], i, array)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '1. It should run through the array array.length times': function() {
+      fail();
+      var numberOfTimesCallbackHasRun = 0;
+      findIndex(['a', 'b', 'c'], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '2. It should not skip holes': function() {
+      // fail();
+      var numberOfTimesCallbackHasRun = 0;
+      findIndex(['a', , 'c'], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '3. It should pass in the i-th element as the first element to callback': function() {
+      fail();
+      findIndex(['a'], function(element) {
+        eq(element, 'a');
+      });
+    },
+    '4. It should pass in the i-th position as the second element to callback': function() {
+      fail();
+      findIndex(['a'], function(element, position) {
+        eq(element[0], 'a');
+      });
+    },
+    '5. It should pass in the array as the third element to callback': function() {
+      var originalArray = ['a', 'b', 'c'];
+      findIndex(originalArray, function(element, position, passedArray) {
+        eq(passedArray, originalArray);
+      });
+    },
+    '6. It should be able to accept an optional this object': function() {
+      // fail();
+      findIndex([], function() {
+        eq(this.description, 'I should be accessible');
+      }, {
+        description: 'I should be accessible'
+      });
+    },
+    '7. It should return the index of the first single true value': function() {
+      fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var foundIndex = findIndex(testArray, function(element, position) {
+        if (testArray[position] === 'apple') {
+          return position;
+        }
+      });
+      eq(foundIndex, 2);
+      eq(Number.isInteger(foundIndex), true);
+    },
+    '8. It should stop running through the array after returning that index of the first single true value': function() {
+      // fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var numberOfTimesCallbackHasRun = 0;
+      var foundIndex = findIndex(testArray, function(element, position) {
+        numberOfTimesCallbackHasRun++;
+        if (testArray[position] === 'banana') {
+          return position;
+        }
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+    '9. If there is no value it should return -1': function() {
+      // fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var foundIndex = findIndex(testArray, function(element, position) {
+        if (testArray[position] === 'kiwi') {
+          return position;
+        }
+      });
+      eq(foundIndex, -1);
+    },
+    '10. It should not visit elements appended to the array after fn callback was called': function() {
+      // fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var foundIndex = findIndex(testArray, function(element, position) {
+        testArray.push('kiwi');
+        if (testArray[position] === 'kiwi') {
+          return position;
+        }
+      });
+      eq(foundIndex, -1);
+    },
+    '11. If an unvisited element\'s value is changed by callback, this element will be looked at at its new value when visited': function() {
+      // fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var foundIndex = findIndex(testArray, function(element, position) {
+        testArray[1] = 'kiwi';
+        if (testArray[position] === 'kiwi') {
+          return position;
+        }
+      });
+      eq(foundIndex, 1);
+    },
+    '12. Elements that are deleted are still visited': function() {
+      // fail();
+      var testArray = ['orange', 'banana', 'apple'];
+      var numberOfTimesCallbackHasRun = 0;
+      var foundIndex = findIndex(testArray, function(element, position) {
+        numberOfTimesCallbackHasRun++;
+        testArray.splice(1);
+        if (testArray[position] === 'banana') {
+          return position;
+        }
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+  });
+</script>
