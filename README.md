@@ -4,7 +4,7 @@ This project is a work-in-progress building and testing series of functions that
 
 ## List of methods tested (to be updated)
 Iterators
-``` js
+``` console
 Array.prototype.forEach()
 Array.prototype.filter()
 Array.prototype.map()
