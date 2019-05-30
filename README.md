@@ -14,10 +14,8 @@ Array.prototype.findIndex()
 ```
 
 ## Visuals
-!![Screenshot](result_successes.jpg)
-
-!![Screenshot](result_failures.jpg)
-
+https://github.com/k-awe-some/js-array-functions/blob/master/screenshots/result_successes.JPG?raw=true
+https://github.com/k-awe-some/js-array-functions/blob/master/screenshots/result_failures.JPG?raw=true
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
