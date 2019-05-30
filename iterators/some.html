@@ -1,0 +1,122 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     every(array, callback(currentValue[, currentIndex[, array]])[, optionalThisObject])
+
+  // CALLBACK PARAMETERS:
+  //     currentValue
+  //     currentIndex - optional
+  //     array - optional
+
+  // RETURN VALUE
+  //     a boolean
+
+  /* APPLICATION CODE */
+  function some(array, callback, optionalThisObject) {
+    var arrayIndexes = Object.keys(array);
+    callback = optionalThisObject ? callback.bind(optionalThisObject) : callback;
+
+    for (var i = 0; i < array.length; i++) {
+      if (arrayIndexes[i] in array && callback(array[i], i, array)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. It should run through the array array.length times': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      var test = some(['a', 'b', 'c'], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '02. It should skip holes': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      var test = some([1, 2, , 3], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '03. It should pass in the i-th element as the first element to callback': function() {
+      some(['a'], function(element) {
+        eq(element, 'a');
+      });
+    },
+    '04. It should pass in the i-th position as the second element to callback': function() {
+      some(['a'], function(element, position) {
+        eq(position, 0);
+      });
+    },
+    '05. It should pass in the array as the third element to callback': function() {
+      var originalArray = ['a', 'b', 'c'];
+      some(originalArray, function(element, position, passedArray) {
+        eq(originalArray, passedArray);
+      });
+    },
+    '06. It should be able to accept an optional this object': function() {
+      some(['a', 'b', 'c'], function() {
+        eq(this.name, 'I am an optional this object');
+      }, {
+        name: 'I am an optional this object'
+      });
+    },
+    '07. It should immediately return true once callback returns a truthy value': function() {
+      var testArray = [6, 3, 10];
+      var numberOfTimesCallbackHasRun = 0;
+      var someResult = some(testArray, function(element) {
+        numberOfTimesCallbackHasRun++;
+        return element < 5;
+      });
+      eq(typeof(someResult), 'boolean');
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(someResult, true);
+    },
+    '08. It should return false if array is empty': function() {
+      var someResult = some([], function(element) {});
+      eq(typeof(someResult), 'boolean');
+      eq(someResult, false);
+    },
+    '09. It should return false if callback returns a falsy value for every single element': function() {
+      var testArray = [10, 20, 30];
+      var someResult = some(testArray, function(element) {
+        return element > 50;
+      });
+      eq(typeof(someResult), 'boolean');
+      eq(someResult, false);
+    },
+    '10. It should not visit elements appended to the array after fn callback was called': function() {
+      var originalArray = ['a', 'b'];
+      var numberOfTimesCallbackHasRun = 0;
+      some(originalArray, function() {
+        originalArray.push('c');
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+    '11. If an unvisited element\'s value is changed by callback, this element will be looked at at its new value when visited': function() {
+      var originalArray = ['I exist', 'I will be changed'];
+      var numberOfTimesCallbackHasRun = 0;
+      var someResult = some(originalArray, function(element) {
+        numberOfTimesCallbackHasRun++;
+        originalArray[1] = 'I exist';
+        return element === 'I do not exist';
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(someResult, false);
+    },
+    '12. It should not visit deleted elements': function() {
+      var originalArray = ['a', 'a', 'I will be deleted by callback'];
+      var numberOfTimesCallbackHasRun = 0;
+      var someResult = some(originalArray, function(element) {
+        originalArray.splice(2);
+        numberOfTimesCallbackHasRun++;
+        return element === 'b';
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(someResult, false);
+    }
+  });
+</script>
