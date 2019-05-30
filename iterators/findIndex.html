@@ -15,15 +15,12 @@
 
   /* APPLICATION CODE */
   function findIndex(array, callback, optionalThisObject) {
-    var findIndexFunction = callback;
     var length = array.length;
 
-    if (optionalThisObject) {
-      findIndexFunction = callback.bind(optionalThisObject);
-    }
+    callback = optionalThisObject ? callback.bind(optionalThisObject) : callback;
 
     for (var i = 0; i < length; i++) {
-      if (findIndexFunction(array[i], i, array)) {
+      if (callback(array[i], i, array)) {
         return i;
       }
     }
@@ -33,7 +30,7 @@
   /* TESTING CODE */
   tests({
     '1. It should run through the array array.length times': function() {
-      fail();
+      // fail();
       var numberOfTimesCallbackHasRun = 0;
       findIndex(['a', 'b', 'c'], function() {
         numberOfTimesCallbackHasRun++;
@@ -49,15 +46,15 @@
       eq(numberOfTimesCallbackHasRun, 3);
     },
     '3. It should pass in the i-th element as the first element to callback': function() {
-      fail();
+      // fail();
       findIndex(['a'], function(element) {
         eq(element, 'a');
       });
     },
     '4. It should pass in the i-th position as the second element to callback': function() {
-      fail();
+      // fail();
       findIndex(['a'], function(element, position) {
-        eq(element[0], 'a');
+        eq(position, 0);
       });
     },
     '5. It should pass in the array as the third element to callback': function() {
@@ -68,14 +65,14 @@
     },
     '6. It should be able to accept an optional this object': function() {
       // fail();
-      findIndex([], function() {
+      findIndex(['a', 'b', 'c'], function() {
         eq(this.description, 'I should be accessible');
       }, {
         description: 'I should be accessible'
       });
     },
     '7. It should return the index of the first single true value': function() {
-      fail();
+      // fail();
       var testArray = ['orange', 'banana', 'apple'];
       var foundIndex = findIndex(testArray, function(element, position) {
         if (testArray[position] === 'apple') {
@@ -85,7 +82,7 @@
       eq(foundIndex, 2);
       eq(Number.isInteger(foundIndex), true);
     },
-    '8. It should stop running through the array after returning that index of the first single true value': function() {
+    '8. It should stop running through the array after returning that index': function() {
       // fail();
       var testArray = ['orange', 'banana', 'apple'];
       var numberOfTimesCallbackHasRun = 0;
@@ -129,7 +126,7 @@
       });
       eq(foundIndex, 1);
     },
-    '12. Elements that are deleted are still visited': function() {
+    '12. It should visit deleted elements': function() {
       // fail();
       var testArray = ['orange', 'banana', 'apple'];
       var numberOfTimesCallbackHasRun = 0;
