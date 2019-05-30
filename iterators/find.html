@@ -1,0 +1,146 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     find(array, callback[, optionalThisObject])
+
+  // CALLBACK PARAMETERS:
+  //     currentValue
+  //     currentIndex
+  //     array
+
+  // RETURN VALUE
+  //     returns a single value
+  //     of the first element that satisfies fn callback
+
+  // REQUIREMENTS:
+  //     it should run thru the array array.length times
+  //     it should not skip holes
+  //     it should pass in the i-th element as the first element to callback
+  //     it should pass in the i-th position as the second element to callback
+  //     it should pass in the array as the third element to callback
+  //     it should be able to accept an optionalThisObject
+  //     it should return the first single true value
+  //     it should stop running through the array after returning that first single true value
+  //     if there's no true value, it should return 'undefined'
+  //     it should not visit elements appended to the array after fn callback was called
+  //     if an unvisited element's value is changed by callback, this element will be looked at at its new value when visited
+  //     elements that are deleted are still visited.
+
+  /* APPLICATION CODE */
+  function find(array, callback, optionalThisObject) {
+    var findFunction = callback;
+    const length = array.length; // store array.length in a var so it's fixed
+
+    if (optionalThisObject) {
+      findFunction = callback.bind(optionalThisObject); // .bind returns a new fn that needs to be stored in a separate var in order to run in conditional cases
+    }
+
+    for (var i = 0; i < length; i++) {
+      var result = findFunction(array[i], i, array);
+      if (result) { // if callback() returns true
+        return array[i]; // return that true value and break out
+      }
+    }
+    return undefined;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '1. It should run through the array array.length times': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      find([1, 2, 3], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '2. It should not skip holes in array': function() {
+      var numberOfTimesCallbackHasRun = 0;
+      find([, , ], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+    '3. It should pass in the i-th element as the first element to callback': function() {
+      // fail();
+      find([1], function(el) {
+        eq(el, 1);
+      });
+    },
+    '4. It should pass in the i-th position as the second element to callback': function() {
+      find([1], function(el, position) {
+        eq(position, 0);
+      });
+    },
+    '5. It should pass in the array as the third element to callback': function() {
+      testArray = ['a', 'b', 'c'];
+      find(testArray, function(el, position, originalArray) {
+        eq(originalArray, testArray);
+      });
+    },
+    '6. It should accept an optional this object': function() {
+      find([1], function(el, position, array) {
+        eq(this.description, 'I should be accessible from outside.');
+      }, {
+        description: 'I should be accessible from outside.'
+      });
+    },
+    '7. It should return the first single true value from the original array': function() {
+      // fail();
+      var testArray = [1, , 3, 6, 9];
+      var findResult = find(testArray, function(el) {
+        return el > 5;
+      });
+      eq(findResult, 6); // first single true value
+      eq(Array.isArray(findResult), false); // not an array
+    },
+    '8. It should stop running through the array after returning that first single true value': function() {
+      // fail();
+      var numberOfTimesCallbackHasRun = 0;
+      var testArray = ['orange', , 'banana', 'apple'];
+      var findResult = find(testArray, function(el) {
+        numberOfTimesCallbackHasRun++;
+        return el === 'banana';
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+      eq(numberOfTimesCallbackHasRun !== testArray.length, true);
+    },
+    '9. If there is no true value, it should return undefined': function() {
+      // fail();
+      var findResult = find([4, 3, 6], function(el) {
+        return el < 3;
+      });
+      // console.log(findResult)
+      eq(findResult, undefined);
+    },
+    '10. It should not visit elements appended to the array after callback has already been called': function() {
+      // fail();
+      // debugger;
+      originalArray = ['orange', 'banana'];
+      var numberOfTimesCallbackHasRun = 0;
+      var findResult = find(originalArray, function(el, position) {
+        numberOfTimesCallbackHasRun++;
+        originalArray.push('kiwi');
+      });
+      eq(numberOfTimesCallbackHasRun, 2); // because originalArray.length is fixed in function code
+    },
+    '11. If an unvisited element\'s value is changed by callback, this element will be looked at at its new value when visited': function() {
+      // fail();
+      originalArray = ['orange', 'banana', 'apple'];
+      var findResult = find(originalArray, function(el, position) {
+        originalArray[1] = 'kiwi';
+        return el === 'kiwi';
+      });
+      eq(findResult, originalArray[1]);
+    },
+    '12. Elements that are deleted are still visited': function() {
+      // fail();
+      var originalArray = ['orange', 'banana', 'apple'];
+      var numberOfTimesCallbackHasRun = 0;
+      var findResult = find(originalArray, function(el, position) {
+        originalArray.splice(1);
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+  });
+</script>
