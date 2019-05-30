@@ -1,0 +1,144 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     every(array, callback[, optionalThisObject])
+
+  // CALLBACK PARAMETERS:
+  //     currentValue
+  //     currentIndex - optional
+  //     array - optional
+
+  // RETURN VALUE
+  //     returns a boolean
+
+  // REQUIREMENTS
+
+
+  // It should not visit deleted elements
+
+  /* APPLICATION CODE */
+  function every(array, callback, optionalThisObject) {
+    var arrayIndexes = Object.keys(array);
+    var length = arrayIndexes.length; // returns number of defined elements
+
+    callback = optionalThisObject ? callback.bind(optionalThisObject) : callback;
+
+    for (var i = 0; i < length; i++) {
+      if (arrayIndexes[i] in array && callback(array[i], i, array) === false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. It should run through the array array.length times': function() {
+      // fail();
+      var numberOfTimesCallbackHasRun = 0;
+      var test = every(['a', 'b', 'c'], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '02. It should skip holes': function() {
+      // fail();
+      var numberOfTimesCallbackHasRun = 0;
+      var test = every([1, 2, , 3], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '03. It should pass in the i-th element as the first element to callback': function() {
+      // fail();
+      every(['a'], function(element) {
+        eq(element, 'a');
+      });
+    },
+    '04. It should pass in the i-th position as the second element to callback': function() {
+      // fail();
+      every(['a'], function(element, position) {
+        eq(position, 0);
+      });
+    },
+    '05. It should pass in the array as the third element to callback': function() {
+      // fail();
+      var originalArray = ['a', 'b', 'c'];
+      every(originalArray, function(element, position, passedArray) {
+        eq(originalArray, passedArray);
+      });
+    },
+    '06. It should be able to accept an optional this object': function() {
+      // fail();
+      every(['a', 'b', 'c'], function() {
+        eq(this.name, 'I am an optional this object');
+      }, {
+        name: 'I am an optional this object'
+      });
+    },
+    '07. It should return true if callback returns a truthy value for every single array element': function() {
+      // fail();
+      // debugger;
+      var testArray = ['1', '2', '3'];
+      var numberOfTimesCallbackHasRun = 0;
+      var everyResult = every(testArray, function(element) {
+        numberOfTimesCallbackHasRun++;
+        return element < 5;
+      });
+      eq(typeof(everyResult), 'boolean');
+      eq(numberOfTimesCallbackHasRun, 3);
+      eq(everyResult, true);
+    },
+    '08. It should return true if array is empty': function() {
+      // fail();
+      // debugger;
+      var everyResult = every([], function(element) {});
+      eq(typeof(everyResult), 'boolean');
+      eq(everyResult, true);
+    },
+
+    '09. It should immediately return false if callback returns a falsy value, then stops running through the array.': function() {
+      // fail();
+      var testArray = ['a', 'b', 'c'];
+      var everyResult = every(testArray, function(element) {
+        return element === 'b';
+      });
+      eq(typeof(everyResult), 'boolean');
+      eq(everyResult, false);
+    },
+    '10. It should not visit elements appended to the array after fn callback was called': function() {
+      var originalArray = ['a', 'b'];
+      var numberOfTimesCallbackHasRun = 0;
+      every(originalArray, function() {
+        originalArray.push('c');
+        numberOfTimesCallbackHasRun++;
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+    '11. If an unvisited element\'s value is changed by callback, this element will be looked at at its new value when visited': function() {
+      // debugger;
+      var originalArray = ['I belong', 'I will be changed'];
+      var numberOfTimesCallbackHasRun = 0;
+      var everyResult = every(originalArray, function(element) {
+        numberOfTimesCallbackHasRun++;
+        originalArray[1] = 'I belong';
+        return element === 'I belong';
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(everyResult, true);
+    },
+    '12. It should not visit deleted elements': function() {
+      // debugger;
+      var originalArray = ['a', 'a', 'I will be deleted by callback'];
+      var numberOfTimesCallbackHasRun = 0;
+      var everyResult = every(originalArray, function(element) {
+
+        originalArray.splice(2);
+        numberOfTimesCallbackHasRun++;
+        return element === 'a';
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(everyResult, true);
+    }
+  });
+</script>
