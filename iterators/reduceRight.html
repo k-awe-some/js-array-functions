@@ -1,0 +1,191 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     reduceRight(array, callback(accumulator, currentValue[, currentIndex[, array]])[, initialValue])
+
+  // CALLBACK PARAMETERS:
+  //     accumulator
+  //     currentValue
+  //     currentIndex - optional
+  //     array - optional
+
+  // RETURN VALUE
+  //     returns a single value
+
+  // REQUIREMENTS
+  //     if initialValue, run through array array.length times
+  //     if no initialValue, run through array (array.length - 1) times
+  //     if initialValue, accumulator === initialValue
+  //     if initialValue, currentValue === array[array.length - 1]
+  //     if initialValue, currentIndex === array.length - 1
+  //     if no initialValue, accumulator === array[array.length - 1]
+  //     if no initialValue, currentValue === array[array.length - 2]
+  //     if no initialValue, currentIndex === array.length - 2
+  //     if no initialValue && array has one element (at any position), return that solo element without calling callback
+  //     if initialValue && array is empty, return initialValue
+  //     actually reduce
+  //     if no initialValue && array is empty, throw TypeError
+
+
+  //     skip holes if initialValue
+  //     skip holes if no initialValue
+  //     pass array as 4th argument to callback
+
+  /* APPLICATION CODE */
+  function reduceRight(array, callback, initialValue) {
+    const arrayIndexes = Object.keys(array);
+    const length = array.length;
+    let accumulator = initialValue;
+    let startingIndex = length - 1;
+
+    // NO initialValue
+    if (arguments.length < 3) {
+      if (length === 1) {
+        const onlyIndex = arrayIndexes[0];
+        const onlyElement = array[onlyIndex];
+        return onlyElement;
+      }
+
+      if (length === 0) {
+        throw new TypeError('Reduce of empty array with no initial value');
+      }
+
+      while (startingIndex in array === false) {
+        startingIndex--;
+      }
+
+      accumulator = array[startingIndex];
+      startingIndex--;
+
+    } else { // HAS initialValue
+      if (length === 0) {
+        return initialValue;
+      }
+    }
+
+    for (let i = startingIndex; i >= 0 && i < length; i--) {
+      if (i in array) {
+        accumulator = callback(accumulator, array[i], i, array);
+      }
+    }
+    return accumulator;
+  }
+
+
+  /* TESTING CODE */
+  tests({
+    '01. If initialValue, it should run through array (array.length) times': function() {
+      let numberOfTimesCallbackHasRun = 0;
+      reduceRight([1, 2, 3], function() {
+        numberOfTimesCallbackHasRun++;
+      }, 0);
+      // console.log(numberOfTimesCallbackHasRun);
+      eq(numberOfTimesCallbackHasRun, 3);
+    },
+    '02. If no initialValue, it should run through array (array.length - 1) times': function() {
+      let numberOfTimesCallbackHasRun = 0;
+      reduceRight([1, 2, 3], function() {
+        numberOfTimesCallbackHasRun++;
+      });
+      // console.log(numberOfTimesCallbackHasRun);
+      eq(numberOfTimesCallbackHasRun, 2);
+    },
+
+    '03. If initialValue, accumulator should start with initialValue': function() {
+      reduceRight([1], function(acc) {
+        eq(acc, 5);
+      }, 5);
+    },
+    '04. If initialValue, currentValue should start with the last element in the array': function() {
+      let orderOfValuesPassedIn = []; // visualize passed in values in order
+      reduceRight([1, 2, 3], function(acc, currentValue) {
+        orderOfValuesPassedIn.push(currentValue);
+      }, 0);
+      // console.log(orderOfValuesPassedIn);
+      eq(orderOfValuesPassedIn[0], 3);
+    },
+    '05. If initialValue, currentIndex should start with the last index in the array': function() {
+      orderOfIndexesPassedIn = []; // visualize passed in indexes in order
+      reduceRight([1, 2, 3], function(acc, currentValue, currentIndex) {
+        orderOfIndexesPassedIn.push(currentIndex);
+      }, 0);
+      // console.log(orderOfIndexesPassedIn);
+      eq(orderOfIndexesPassedIn[0], 2);
+    },
+
+    '06. If no initialValue, accumulator should start with the last element in the array': function() {
+      var orderOfAccumulatorsPassedIn = []; // visualize passed in accumulators in order
+      reduceRight(['a', 'b', 'c'], function(acc) {
+        orderOfAccumulatorsPassedIn.push(acc);
+      });
+      eq(orderOfAccumulatorsPassedIn[0], 'c');
+    },
+    '07. If no initialValue, currentValue should start with the second-to-last element in the array': function() {
+      let orderOfValuesPassedIn = [];
+      reduceRight(['a', 'b', 'c'], function(acc, currentValue) {
+        orderOfValuesPassedIn.push(currentValue);
+      });
+      // console.log(orderOfValuesPassedIn)
+      eq(orderOfValuesPassedIn[0], 'b');
+    },
+    '08. If no initialValue, currentIndex should start with the second-to-last index in the array': function() {
+      let orderOfIndexesPassedIn = [];
+      reduceRight(['a', 'b', 'c'], function(acc, currentValue, currentIndex) {
+        orderOfIndexesPassedIn.push(currentIndex);
+      });
+      // console.log(orderOfIndexesPassedIn)
+      eq(orderOfIndexesPassedIn[0], 1);
+    },
+    '09. If no initialValue and array has one element (at any position), return that solo element without calling callback': function() {
+      const result = reduceRight([, 'b', ], function() {});
+      eq(result, 'b');
+    },
+    '10. If initialValue and array is empty, return initialValue': function() {
+      const result = reduceRight([], function() {}, 2);
+      eq(result, 2);
+    },
+    '11. It should actually reduce': function() {
+      // debugger;
+      const reduceRightSum = reduceRight([1, 2, 3], function(acc, currentValue) {
+        return acc + currentValue;
+      }, 5);
+      eq(reduceRightSum, 11);
+    },
+    '12. If no initialValue and array is empty, throw TypeError': function() {
+      var isTypeError = false;
+      try {
+        reduceRight([], function() {});
+      } catch (e) {
+        isTypeError = (e instanceof TypeError);
+      }
+      eq(isTypeError, true);
+    },
+    '13. If initialValue, it should skip holes': function() {
+      // debugger;
+      var numberOfTimesCallbackHasRun = 0;
+      var reduceRightSum = reduceRight([1, , 2, , 3], function(acc, currentValue) {
+        numberOfTimesCallbackHasRun++;
+        return acc + currentValue;
+      }, 5);
+      eq(numberOfTimesCallbackHasRun, 3);
+      eq(reduceRightSum, 11);
+    },
+    '14. If no initialValue, it should skip holes too': function() {
+      // debugger;
+      var numberOfTimesCallbackHasRun = 0;
+      var reduceRightSum = reduceRight([1, , 2, , 3], function(acc, currentValue) {
+        numberOfTimesCallbackHasRun++;
+        return acc + currentValue;
+      });
+      eq(numberOfTimesCallbackHasRun, 2);
+      eq(reduceRightSum, 6);
+    },
+    '15. It should pass array as 4th argument to callback': function() {
+      // debugger;
+      var originalArray = [1, , 2, , 3];
+      var reduceRightSum = reduceRight(originalArray, function(acc, currentValue, currentIndex, passedArray) {
+        eq(passedArray, originalArray);
+      });
+    },
+  });
+</script>
