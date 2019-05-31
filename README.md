@@ -11,6 +11,10 @@ Array.prototype.map()
 Array.prototype.reduce()
 Array.prototype.find()
 Array.prototype.findIndex()
+Array.prototype.every()
+Array.prototype.some()
+Array.prototype.reduceRight()
+Array.prototype.concat()
 ```
 
 ## Visuals
