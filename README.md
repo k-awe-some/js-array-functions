@@ -14,7 +14,11 @@ Array.prototype.findIndex()
 Array.prototype.every()
 Array.prototype.some()
 Array.prototype.reduceRight()
+```
+Accessors
+``` console
 Array.prototype.concat()
+Array.prototype.indexOf()
 ```
 
 ## Visuals
