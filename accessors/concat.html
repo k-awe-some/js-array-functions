@@ -43,112 +43,83 @@
   /* TESTING CODE */
   tests({
     '01. It should return an array': function() {
-      // debugger;
       var originalArray = ['I am original'];
-      var newArray = concat(originalArray, ['hello world']);
+      var newArray = concat(originalArray, ['Hello world']);
       eq(Array.isArray(newArray), true);
     },
     '02. If no argument is passed in, it should return a shalow copy of the original array.': function() {
-      // debugger;
       var originalArray = ['I', 'am', 'original.'];
       var newArray = concat(originalArray);
       eq(JSON.stringify(newArray), JSON.stringify(originalArray));
     },
     '03. It should pass in the elements of the original array first.': function() {
-      // debugger;
       var originalArray = ['I am original'];
-      var array1 = ['Yay me!'];
+      var newArray = concat(originalArray, ['Yay me!']);
       var expectedResult = ['I am original', ' Yay me!'];
-      var newArray = concat(originalArray, array1);
       eq(newArray[0] == originalArray, true);
     },
     '04. If the original array is empty, the new array should start with the value(s) of the first argument passed in.': function() {
-      // debugger;
-      var expectedResult = [1, 2, 3];
       var newArray = concat([], [1, 2, 3]);
+      var expectedResult = [1, 2, 3];
       // console.log(newArray);
       eq(JSON.stringify(newArray), JSON.stringify(expectedResult));
     },
     '05. If one or more arguments are passed in, it should copy the value of data into the new array respectively.': function() {
-      // debugger;
       var originalArray = [1];
-      var array1 = [2];
-      var array2 = [3];
+      var newArray = concat(originalArray, [2], [3]);
       var expectedResult = [1, 2, 3];
-      var newArray = concat(originalArray, array1, array2);
       eq(newArray[0], expectedResult[0]);
       eq(newArray[1], expectedResult[1]);
       eq(newArray[2], expectedResult[2]);
     },
     '06. If argument passed in is an array, it should copy the elements of that array into the new array.': function() {
-      // debugger;
       var originalArray = [1, 2];
-      var array1 = [3, 4];
-      var array2 = [5, 6];
+      var newArray = concat(originalArray, [3, 4], [5, 6]);
       var expectedResult = [1, 2, 3, 4, 5, 6];
-      var newArray = concat(originalArray, array1, array2);
       // console.log(newArray);
       eq(JSON.stringify(newArray), JSON.stringify(expectedResult));
     },
     '07. If argument passed in is an object, it should copy object references into the new array, not the actual object.': function() {
-      // debugger;
       var originalArray = ['I', 'am', 'original'];
-      var object1 = {
-        name: 'Object One',
-        species: 'object'
-      };
-      var expectedResult = ['I', 'am', 'original', object1];
-      var newArray = concat(originalArray, object1);
+      var newArray = concat(originalArray, {name: 'Object One'});
+      var expectedResult = ['I', 'am', 'original', {name: 'Object One'}];
       // console.log(newArray);
       eq(JSON.stringify(newArray), JSON.stringify(expectedResult));
     },
     '08. If argument passed in is a referenced object, changes in that object are visible to both the new and original arrays.': function() {
-      // debugger;
-      var originalArray = [{
-        greeting: 'Hello!'
-      }];
-      var object1 = {
-        name: 'Object One',
-        species: 'object'
-      };
+      var originalArray = [{greeting: 'Hello!'}];
+      var object1 = {name: 'Object One'};
       var newArray = concat(originalArray, object1);
       originalArray[0].greeting = 'Hello again!';
       object1.name = 'My name is now Object Two';
       eq(newArray[0], originalArray[0]); // {greeting: "Hello again!"}
-      eq(newArray[1], object1); // {name: "My name is now Object Two", species: "object"}
+      eq(newArray[1], object1); // {name: "My name is now Object Two"}
     },
     '09. If argument passed in is strings, numbers or booleans, it should copy the values of these strings, numbers or booleans into the new array.': function() {
-      // debugger;
       var originalArray = ['I am a string'];
-      var array1 = [1, 2, 3];
-      var array2 = [true];
+      var newArray = concat(originalArray, [1, 2, 3], [true]);
       var expectedResult = ['I am a string', 1, 2, 3, true];
-      var newArray = concat(originalArray, array1, array2);
       // console.log(newArray);
       eq(JSON.stringify(newArray), JSON.stringify(expectedResult));
     },
     '10. It should not modify the originals.': function() {
-      // debugger;
       var originalArray = ['I', 'am', 'awesome'];
-      var array1 = ['Yayyy'];
-      var newArray = concat(originalArray, array1);
+      var newArray = concat(originalArray, ['Yayyy']);
       eq(originalArray[0], 'I');
       eq(originalArray[1], 'am');
       eq(originalArray[2], 'awesome');
     },
     '11. It should not recurse into nested arrays.': function() {
-      // debugger;
       var originalArray = ['I', 'am', ['awesome']];
       var array1 = ['Yayyy', ['me']];
-      var expectedResult = ['I', 'am', ['awesome'], 'Yayyy', ['me']]
       var newArray = concat(originalArray, array1);
+      var expectedResult = ['I', 'am', ['awesome'], 'Yayyy', ['me']]
       eq(Array.isArray(newArray[2]), true);
       eq(newArray[2], originalArray[2]); // ['awesome']
       eq(Array.isArray(newArray[4]), true);
       eq(newArray[4], array1[1]); // ['me']
     },
     '12. It should not skip holes.': function() {
-      // debugger;
       var originalArray = [1, ,];
       var newArray = concat(originalArray, [3, ,]);
       eq(newArray.length, 4);
