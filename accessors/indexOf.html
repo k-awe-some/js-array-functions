@@ -1,0 +1,104 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     indexOf(array, searchElement[, fromIndex])
+
+  // PARAMETERS
+  //     searchElement: to locate in the array
+  //     fromIndex - optional: the index to start the search at
+
+  // RETURN VALUE
+  //     returns an index
+  //     returns -1 if no index was found
+
+  /* APPLICATION CODE */
+  function indexOf(array, searchElement, fromIndex) {
+    const length = array.length;
+    let searchStartingIndex = 0;
+
+    if (length === 0 || !searchElement || fromIndex >= length) {
+      return -1;
+    }
+
+    if (fromIndex) {
+      if (fromIndex < 0) {
+        searchStartingIndex = (length + fromIndex) > 0 ? (length + fromIndex) : 0;
+      } else {
+        searchStartingIndex = fromIndex;
+      }
+    }
+
+    for (let i = searchStartingIndex; i < length; i++) {
+      if (array[i] === searchElement) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. If array is empty, it should return -1.': function() {
+      const result = indexOf([]);
+      eq(result, -1);
+    },
+    '02. If no searchElement, it should return -1.': function() {
+      const result = indexOf(['I am legend']);
+      eq(result, -1);
+    },
+    '03. It should return only the first index at which the element is equal to searchElement.': function() {
+      const result = indexOf(['a', 'b', 'b'], 'b');
+      eq(result, 1);
+    },
+    '04. If no fromIndex or fromIndex === 0, it should start searching at array\'s index 0.': function() {
+      const result = indexOf(['a', 'b', 'c'], 'a');
+      eq(result, 0);
+    },
+    '05. If fromIndex, it should start searching at the given fromIndex.': function() {
+      const result = indexOf(['a', 'b', 'c'], 'a', 1);
+      eq(result, -1);
+    },
+    '06. If fromIndex < 0 and (array + fromIndex) > 0, it should start searching at array[array.length + fromIndex].': function() {
+      // debugger;
+      const result = indexOf(['a', 'b', 'c', 'd'], 'a', -3);
+      eq(result, -1);
+    },
+    '07. If fromIndex < 0 and array.length + fromIndex < 0, it should start searching at array\'s index 0.': function() {
+      // debugger;
+      const result = indexOf(['a', 'b', 'c', 'd'], 'a', -5);
+      eq(result, 0);
+    },
+    '08. If fromIndex >= array.length, it should return -1.': function() {
+      // debugger;
+      const result = indexOf(['a', 'b', 'c', 'd'], 'a', 5);
+      eq(result, -1);
+    },
+    '09. It should be able to search for objects in the array.': function() {
+      // debugger;
+      let obj = {description: 'I am legend.'}
+      const result = indexOf([obj], obj);
+      eq(result, 0);
+    },
+    '10. It should compares searchElement to elements of the array using strict equality.': function() {
+      // debugger;
+      const result = indexOf([3], '3');
+      eq(result, -1);
+    },
+    '11. It should not skip holes.': function() {
+      // debugger;
+      const result = indexOf(['apple', , 'orange', 'kiwi'], 'orange');
+      eq(result, 2);
+    },
+    '12. If no index was found, it should return -1.': function() {
+      // debugger;
+      const result = indexOf(['apple', 'orange', 'kiwi'], 'grape');
+      eq(result, -1);
+    },
+    '13. If should not modify the array.': function() {
+      let originalArray = ['apple', 'orange', 'kiwi'];
+      const result = indexOf(originalArray, 'kiwi');
+      eq(result, 2);
+      eq(JSON.stringify(originalArray), JSON.stringify(['apple', 'orange', 'kiwi']));
+    },
+  });
+</script>
