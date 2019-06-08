@@ -20,19 +20,24 @@
       return -1;
     }
 
-    if (!fromIndex) {
-      searchStartingIndex = length - 1;
+    if (fromIndex >= 0) {
+      searchStartingIndex = (fromIndex >= length) ? length - 1 : fromIndex;
     }
 
-    if (fromIndex) {
-      searchStartingIndex = fromIndex;
+    if (fromIndex < 0) {
+      if ((length + fromIndex) >= 0) {
+        searchStartingIndex = length + fromIndex;
+      } else {
+        return -1;
+      }
     }
 
-    for (let i = searchStartingIndex; i < length; i--) {
+    for (let i = searchStartingIndex; i < length && i >= 0; i--) {
       if (array[i] === searchElement) {
         return i;
       }
     }
+    return -1;
   }
 
   /* TESTING CODE */
@@ -64,25 +69,53 @@
     },
 
     '06. If fromIndex = 0 and array[0] is not equal to searchElement, it should return -1.': function() {
-      // debugger;
       const result = lastIndexOf(['apple', 'orange', 'orange'], 'orange', 0);
       eq(result, -1);
     },
 
-    // '06. If fromIndex < 0 and (array + fromIndex) > 0, it should start searching at array[array.length + fromIndex].': function() {},
+    '07. If fromIndex < 0 and (array.length + fromIndex) > 0, it should start searching at array[array.length + fromIndex].': function() {
+      const result = lastIndexOf(['apple', 'orange', 'kiwi', 'orange'], 'orange', -3);
+      eq(result, 1);
+    },
 
-    // '07. If fromIndex < 0 and array.length + fromIndex < 0, it should return -1.': function() {},
+    '08. If fromIndex < 0 and (array.length + fromIndex) < 0, it should return -1.': function() {
+      const result = lastIndexOf(['apple', 'orange', 'orange'], 'orange', -4);
+      eq(result, -1);
+    },
 
-    // '08. If fromIndex >= array.length, it should start searching with the last element in the array.': function() {},
+    '09. If fromIndex >= array.length, it should start searching with the last element in the array.': function() {
+      const result = lastIndexOf(['apple', 'orange', 'orange'], 'orange', 3);
+      eq(result, 2);
+    },
 
-    // '09. It should be able to search for objects in the array.': function() {},
+    '10. It should be able to search for objects in the array.': function() {
+      let obj = {name: 'Object'};
+      const result = lastIndexOf(['apple', obj, obj], obj);
+      eq(result, 2);
+    },
 
-    // '10. It should compares searchElement to elements of the array using strict equality.': function() {},
+    '11. It should compare searchElement to elements of the array using strict equality.': function() {
+      const result = lastIndexOf([1, 2, 3], '3');
+      eq(result, -1);
+    },
 
-    // '11. It should not skip holes.': function() {},
+    '12. It should not skip holes.': function() {
+      const result = lastIndexOf(['apple', 'orange', , 'orange'], 'orange');
+      eq(result, 3);
+    },
 
-    // '12. If no index was found, it should return -1.': function() {},
+    '13. If no index was found, it should return -1.': function() {
+      const result = lastIndexOf(['apple', 'orange', 'orange'], 'kiwi');
+      eq(result, -1);
+    },
 
-    // '13. If should not modify the array.': function() {},
+    '14. If should not modify the array.': function() {
+      let array = ['apple', 'orange', 'orange'];
+      const result = lastIndexOf(array, 'orange');
+      eq(array[0], 'apple');
+      eq(array[1], 'orange');
+      eq(array[2], 'orange');
+      eq(result, 2);
+    },
   });
 </script>
