@@ -1,0 +1,108 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     includes(array, valueToFind[, fromIndex])
+
+  // PARAMETERS
+  //     valueToFind
+  //     fromIndex - optional: the index to start the search at
+
+  // RETURN VALUE
+  //     returns a boolean
+
+  /* APPLICATION CODE */
+  function includes(array, valueToFind, fromIndex) {
+    const length = array.length;
+    const computedIndex = fromIndex + length;
+    let startingIndex = 0;
+
+    if (fromIndex >= length) {
+      return false;
+    } else {
+      if (fromIndex > 0) {
+        startingIndex = fromIndex;
+      } else {
+        startingIndex = computedIndex > 0 ? computedIndex : 0;
+      }
+    }
+
+    for (let i = startingIndex; i < length; i++) {
+      if (!valueToFind && !array[i]) {
+        return true;
+      }
+      else if (array[i] === valueToFind) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. If array[i] === valueToFind, it should return true.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'kiwi');
+      eq(result, true);
+    },
+    '02. If array[i] !== valueToFind, it should return false.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'grape');
+      eq(result, false);
+    },
+    '03. If array is empty, it should return false.': function() {
+      const result = includes([]);
+      eq(result, false);
+    },
+    '04. If no valueToFind and array does not contain holes, it should return false.': function() {
+      const result = includes(['apple', 'orange']);
+      eq(result, false);
+    },
+    '05. If no valueToFind and array does contain holes, it should return true.': function() {
+      const result = includes(['apple', '']);
+      eq(result, true);
+    },
+    '06. If no fromIndex, it should search the whole array.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'kiwi');
+      eq(result, true);
+    },
+    '07. If fromIndex >= array.length, it should return false.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'kiwi', 3);
+      eq(result, false);
+    },
+    '08. If 0 <= fromIndex < array.length, it should start searching at array[fromIndex].': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'apple', 1);
+      eq(result, false);
+    },
+    '09. If fromIndex < 0 and (fromIndex + length) > 0, it should start searching at array[fromIndex + length].': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'apple', -2);
+      eq(result, false);
+    },
+    '10. If fromIndex < 0 and (fromIndex + length) <= 0, it should search the whole array.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'apple', -5);
+      eq(result, true);
+    },
+    '11. It should actually return a boolean.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'apple', -5);
+      eq(typeof(result) === 'boolean', true);
+    },
+    '12. It should not skip holes.': function() {
+      const result = includes(['apple', '', , 'apple', 'kiwi'], 'apple', 2);
+      eq(result, true);
+    },
+    '13. It should not modify the original array.': function() {
+      let originalArray = ['apple', 'orange', 'kiwi']
+      const result = includes(originalArray, 'apple', 1);
+      eq(result, false);
+      eq(originalArray[0], 'apple');
+      eq(originalArray[1], 'orange');
+      eq(originalArray[2], 'kiwi');
+    },
+    '14. It should be case-sensitive when comparing strings and characters.': function() {
+      const result = includes(['apple', 'orange', 'kiwi'], 'Apple');
+      eq(result, false);
+    },
+    '15. It should consider all values of zero to be equal regardless of signs.': function() {
+      const result = includes([+0, 1, 2, 3, 4], -0);
+      eq(result, true);
+    },
+
+  });
+</script>
