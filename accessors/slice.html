@@ -1,0 +1,156 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //   slice(array, [begin[, end]])
+
+  // PARAMETERS
+  //   begin - optional
+  //   end - optional
+
+  // RETURN VALUE
+  //     returns an array
+
+  /* APPLICATION CODE */
+  function slice(array, begin, end) {
+    const length = array.length;
+    let newArray = [];
+    let startingIndex = 0;
+    let endIndex = length;
+
+    // `begin` conditions
+    if (begin === undefined) {
+      newArray = array;
+    }
+    startingIndex = begin >= 0 ? begin : length + begin;
+
+    // `end` conditions
+    if (end === 0) {
+      return newArray;
+    }
+    if (end === undefined || end >= length) {
+      endIndex = length;
+    } else {
+      endIndex = end > 0 ? end : length + end;
+    }
+
+    for (let i = startingIndex; i < endIndex; i++) {
+      newArray.push(array[i]);
+    }
+    return newArray;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '00. If the original array is empty, it should return an empty array.': function() {
+      const result = slice([]);
+      eq(result.toString(), [].toString());
+    },
+
+    // `begin` conditions
+    '01. If no begin, it should return a copy of the original array.': function() {
+      const originalArray = ['apple', 'kiwi', 'banana'];
+      const result = slice(originalArray);
+      eq(result.toString(), originalArray.toString());
+    },
+    '02. If 0 =< begin < array.length, it should extract from array[begin].': function() {
+      const result = slice(['apple', 'kiwi', 'banana'], 1);
+      const expectedResult = ['kiwi', 'banana'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '03. If begin < 0, it should extract from array[array.length + begin].': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape'], -2);
+      const expectedResult = ['banana', 'grape'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '04. If begin >= array.length, it should return an empty array.': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape'], 4);
+      const expectedResult = [];
+      eq(result.toString(), expectedResult.toString());
+    },
+
+    // `end` conditions
+    // given that `begin` is valid
+    '05. If no end, it should extract through to the end of the array.': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape'], 1);
+      const expectedResult = ['kiwi', 'banana', 'grape'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '06. If end >= array.length, it should extract through to the end of the array too.': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape'], 1, 4);
+      const expectedResult = ['kiwi', 'banana', 'grape'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '07. If 0 < end < array.length, it should extract up to array[end - 1].': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape'], 1, 3);
+      const expectedResult = ['kiwi', 'banana'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '08. If end < 0, it should extract up to but not including array[array.length + end].': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape', 'cherry'], 1, -3);
+      const expectedResult = ['kiwi'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '09. If end = 0, it should return an empty array.': function() {
+      const result = slice(['apple', 'kiwi', 'banana', 'grape', 'cherry'], 1, 0);
+      const expectedResult = [];
+      eq(result.toString(), expectedResult.toString());
+    },
+
+    // other conditions regarding elements
+    '10. It should be able to copy object references and not the actual object.': function() {
+      const result = slice(['apple', 'kiwi', {
+        name: 'Object'
+      }, 'grape'], 1, 3);
+      const expectedResult = ['kiwi', {
+        name: 'Object'
+      }];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '11. Changes in a referenced object should be visible to both the new and original arrays.': function() {
+      const originalArray = ['apple', 'kiwi', {
+        name: 'Object 1'
+      }, 'grape'];
+      const newArray = slice(originalArray, 1, 3); // expects ['kiwi', {name: 'Object'}];
+      originalArray[2].name = 'Object 2'
+      eq(originalArray[2].name, newArray[1].name);
+    },
+    '12. It should be able to copy the values of strings, numbers and booleans.': function() {
+      const result = slice(['apple', 1, false, 'kiwi', 2, true], 1, 4);
+      const expectedResult = [1, false, 'kiwi'];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '13. Changes in strings, numbers or booleans in one array should not affect the other array.': function() {
+      let originalArray = ['apple', 1, false, 'kiwi', 2, true];
+      let newArray = slice(originalArray, 1, 4);
+      let expectedResult = [1, false, 'kiwi'];
+      originalArray[1] = 3;
+      originalArray[2] = true;
+      originalArray[3] = 'banana';
+      eq(newArray.toString(), expectedResult.toString());
+    },
+    '14. If new elements are added to either array, the other array should not be affected.': function() {
+      let originalArray = ['apple', 'kiwi', 'banana', 'grape'];
+      let newArray = slice(originalArray, 1, 3);
+      originalArray.push('cherry');
+      newArray.push('blueberry');
+      let expectedNewArray = ['kiwi', 'banana', 'blueberry'];
+      eq(newArray.toString(), expectedNewArray.toString());
+    },
+    '15. It should not skip holes.': function() {
+      const result = slice(['apple', '', 'banana', , 'grape'], 0, 4);
+      const expectedResult = ['apple', '', 'banana', , ];
+      eq(result.toString(), expectedResult.toString());
+    },
+    '16. It should actually return an array.': function() {
+      const result = slice(['apple', 'banana', 'grape', 'cherry'], 1, 3); // expects ['banana', 'grape']
+      eq(Array.isArray(result), true);
+    },
+    '17. It should not modify the original array.': function() {
+      let originalArray = ['apple', 'banana', 'grape'];
+      const result = slice(originalArray, 1, 2); // expects ['banana']
+      eq(originalArray[0], 'apple');
+      eq(originalArray[1], 'banana');
+      eq(originalArray[2], 'grape');
+    },
+  });
+</script>
