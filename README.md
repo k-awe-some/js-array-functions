@@ -21,9 +21,9 @@ Accessors
 Array.prototype.concat()
 Array.prototype.indexOf()
 Array.prototype.lastIndexOf()
-Array.prototype.includes() - to be added
-Array.prototype.slice() - to be added
-Array.prototype.join() - to be added
+Array.prototype.includes()
+Array.prototype.slice()
+Array.prototype.join()
 ```
 
 Mutators
