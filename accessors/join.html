@@ -1,0 +1,87 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //   slice(array[, separator])
+
+  // PARAMETERS
+  //   separator - optional
+
+  // RETURN VALUE
+  //     returns a string
+
+  /* APPLICATION CODE */
+  function join(array, separator) {
+    const length = array.length;
+    let joinString = '';
+    let currentSeparator = ',';
+
+    if (separator || separator === '') {
+      currentSeparator = separator;
+    }
+
+    for (let i = 0; i < length; i++) {
+      let joinElement = `${joinString}${array[i]}`;
+
+      if (array[i] === undefined || array[i] === null) {
+        joinElement = `${joinString}`;
+      }
+
+      joinString = i < length - 1 ? `${joinElement}${currentSeparator}` : `${joinElement}`;
+    }
+
+    return joinString;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. It should return a string with all array elements.': function() {
+      const result = join(['apple', 'banana', 'kiwi']);
+      eq(result, 'apple,banana,kiwi');
+    },
+    '02. If no separator, it should return elements separated by commas (by default).': function() {
+      const result = join(['apple', 'banana', 'kiwi']);
+      eq(result, 'apple,banana,kiwi');
+    },
+    '03. It should be able to return strings, numbers and booleans from array.': function() {
+      const result = join(['apple', 1, true]);
+      eq(result, 'apple,1,true');
+    },
+    '04. If separator is an empty string, it should return elements joined without any characters in between them.': function() {
+      const result = join(['apple', 1, true], '');
+      eq(result, 'apple1true');
+    },
+    '05. If separator is specified, it should return elements separated by that separator.': function() {
+      const result = join(['apple', 1, true], '-');
+      eq(result, 'apple-1-true');
+    },
+    '06. If array has only one element, it should return that element without using the separator.': function() {
+      const result = join(['apple'], '?');
+      eq(result, 'apple');
+    },
+    '07. If an element is undefined or null, it should convert that element into an empty string.': function() {
+      const result = join(['apple', '', 'orange', , 'banana', null, 'kiwi']);
+      eq(result, 'apple,,orange,,banana,,kiwi');
+    },
+    '08. If element is an array, it should return that array\'s elements as is (a.k.a. that\'s elements should not be joined by the specified separator).': function() {
+      const result = join(['apple', [1, 2, 3], true], '?');
+      eq(result, 'apple?1,2,3?true');
+    },
+    '09. If element is an object, it should convert that object element into the default value [object Object].': function() {
+      const result = join(['apple', {
+        name: 'My name is Object'
+      }, true], '?');
+      eq(result, 'apple?[object Object]?true');
+    },
+    '10. If array is empty, it should return an empty string.': function() {
+      const result = join([], '?');
+      eq(result, '');
+    },
+    '11. It should not modify the original array.': function() {
+      let originalArray = ['apple', 'banana'];
+      const result = join(originalArray, '?');
+      eq(result, 'apple?banana');
+      eq(originalArray[0], 'apple');
+      eq(originalArray[1], 'banana');
+    },
+  });
+</script>
