@@ -1,0 +1,88 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     push(array, pushElement1[, ...[, pushElementN]])
+
+  // PARAMETERS:
+  //     pushElement(s)
+
+  // RETURN VALUE
+  //     returns a number
+
+  /* APPLICATION CODE */
+  function push(array, pushElement) {
+    let length = array.length;
+
+    for (let i = 1; i < arguments.length; i++) {
+      array[length] = arguments[i];
+      length++;
+    }
+    return length;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. It should add pushElement to the end of the array.': function() {
+      let array = ['a', 'b'];
+      push(array, 'c');
+      eq(array[2], 'c');
+    },
+    '02. It should add multiple pushElements in the order by which they appear.': function() {
+      let array = ['a', 'b'];
+      push(array, 'c', 'd');
+      eq(array[2], 'c');
+      eq(array[3], 'd');
+    },
+    '03. It should return the new length of the array.': function() {
+      let array = ['a', 'b'];
+      const result = push(array, 'c', 'd');
+      eq(result, 4);
+    },
+    '04. If array is empty, it should add pushElement(s) starting at index 0.': function() {
+      let array = [];
+      const result = push(array, 'a', 'b');
+      eq(array[0], 'a');
+      eq(array[1], 'b');
+      eq(result, 2);
+    },
+    '05. It should be able to accept strings, numbers, booleans, or referenced objects as pushElement(s).': function() {
+      let array = [];
+      const result = push(array, 'a', 1, true);
+      eq(typeof array[0], 'string');
+      eq(typeof array[1], 'number');
+      eq(typeof array[2], 'boolean');
+      eq(result, 3);
+    },
+    '06. If pushElement is undefined, null, or is an empty string, it should add that element to the array still.': function() {
+      let array = [];
+      const result = push(array, null, undefined, "");
+      eq(array[0], null);
+      eq(array[1], undefined);
+      eq(array[2], '');
+      eq(result, 3);
+    },
+    '07. If no pushElement, it should do nothing.': function() {
+      let array = ['a', 'b'];
+      const result = push(array);
+      eq(array[0], 'a');
+      eq(array[1], 'b');
+      eq(result, 2);
+    },
+    '08. If no pushElement and array is empty, it should do nothing.': function() {
+      let array = [];
+      const result = push(array);
+      eq(array[0], undefined);
+      eq(result, 0);
+    },
+    '09. It should actually return a number.': function() {
+      let array = ['a', 'b'];
+      const result = push(array, 'c');
+      eq(typeof result, 'number')
+    },
+    '10. It should actually modify the array.': function() {
+      let array = ['a', 'b'];
+      push(array, 'c');
+      eq(array[2], 'c');
+    },
+  });
+</script>
