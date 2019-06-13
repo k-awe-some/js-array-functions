@@ -1,0 +1,45 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     pop(array)
+
+  // PARAMETERS:
+  //     pushElement(s)
+
+  // RETURN VALUE
+  //     returns value of the last element in the array
+
+  /* APPLICATION CODE */
+  function pop(array) {
+    if (array.length === 0) {
+      return undefined;
+    }
+    const lastElement = array[array.length - 1];
+    array.length = array.length - 1;
+    return lastElement;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. It should remove the last element from the array.': function() {
+      let array = ['a', 'b'];
+      const result = pop(array);
+      eq(array[0], 'a');
+      eq(array[1], undefined);
+      eq(array.length, 1);
+    },
+    '02. It should return the removed element.': function() {
+      const result = pop(['a', 'b']);
+      eq(result, 'b');
+    },
+    '03. It should decrease the length of the array by 1.': function() {
+      let array = ['a', 'b', 'c'];
+      const result = pop(array);
+      eq(array.length, 2);
+    },
+    '04. If array is empty, it should return undefined.': function() {
+      const result = pop([]);
+      eq(result, undefined);
+    },
+  });
+</script>
