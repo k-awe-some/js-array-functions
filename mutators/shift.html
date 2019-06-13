@@ -1,0 +1,51 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     shift(array)
+
+  // RETURN VALUE
+  //     returns value of the first element in the array
+
+  /* APPLICATION CODE */
+  function shift(array) {
+    const firstElement = array[0];
+
+    if (array.length === 0) {
+      return undefined;
+    }
+
+    for (let i = 0; i < array.length; i++) {
+      array[i] = array[i + 1];
+    }
+    array.length--;
+    return firstElement;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '1. It should remove the first element from the array.': function() {
+      let array = ['a', 'b'];
+      const result = shift(array);
+      eq(array[0], 'b');
+    },
+    '2. It should return the removed element.': function() {
+      const result = shift(['a', 'b']);
+      eq(result, 'a');
+    },
+    '3. It should decrease the length of the array by 1.': function() {
+      let array = ['a', 'b'];
+      const result = shift(array);
+      eq(array.length, 1);
+    },
+    '4. It should actually shift the array elements at consecutive indexes down.': function() {
+      let array = ['a', 'b', 'c'];
+      const result = shift(array);
+      eq(array[0], 'b');
+      eq(array[1], 'c');
+    },
+    '5. If array is empty, it should return undefined.': function() {
+      const result = shift([]);
+      eq(result, undefined);
+    },
+  });
+</script>
