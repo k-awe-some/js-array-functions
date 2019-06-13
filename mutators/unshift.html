@@ -1,0 +1,61 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     unshift(array[, addElement])
+
+  // RETURN VALUE
+  //     returns a number
+
+  /* APPLICATION CODE */
+  function unshift(array, addElement) {
+    const numberOfAddElements = arguments.length - 1;
+    const arrayLength = array.length;
+    let unshiftIndex = 0;
+    array.length += numberOfAddElements;
+
+    for (let i = arrayLength - 1; i < arrayLength && i >=0 ; i--) {
+      array[i + numberOfAddElements] = array[i];
+    }
+
+    for (let n = 1; n <= numberOfAddElements; n++) {
+      array[unshiftIndex] = arguments[n];
+      unshiftIndex++;
+    }
+    return array.length;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '1. It should add new element(s) to the front of the original array.': function() {
+      let array = ['apple'];
+      const result = unshift(array, 'kiwi');
+      eq(array[0], 'kiwi');
+      eq(array[1], 'apple');
+    },
+    '2. Elements added should appear in the order by which they are passed as parameters.': function() {
+      let array = ['apple'];
+      const result = unshift(array, 'kiwi', 'banana');
+      eq(array[0], 'kiwi');
+      eq(array[1], 'banana');
+      eq(array[2], 'apple');
+    },
+    '3. It should return the new length of the array.': function() {
+      const result = unshift(['apple'], 'kiwi', 'banana');
+      eq(result, 3);
+    },
+    '4. It should actually return a number.': function() {
+      const result = unshift(['apple'], 'kiwi', 'banana');
+      eq(result, 3);
+    },
+    '5. If no addElement, it should not modify the array.': function() {
+      let array = ['apple'];
+      const result = unshift(array);
+      eq(JSON.stringify(array), JSON.stringify(['apple']));
+      eq(result, 1);
+    },
+    '6. If no addElement and array is empty, if should return 0.': function() {
+      const result = unshift([]);
+      eq(result, 0);
+    },
+  });
+</script>
