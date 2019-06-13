@@ -28,8 +28,8 @@ Array.prototype.join()
 
 Mutators
 ``` console
-Array.prototype.push() - to be added
-Array.prototype.pop() - to be added
+Array.prototype.push()
+Array.prototype.pop()
 Array.prototype.shift() - to be added
 Array.prototype.unshift() - to be added
 Array.prototype.fill() - to be added
