@@ -1,0 +1,49 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     reverse(array)
+
+  // RETURN VALUE
+  //     returns the reversed array
+
+  /* APPLICATION CODE */
+  function reverse(array) {
+    const length = array.length;
+    let returnedArray = [];
+
+    for (let i = length - 1, n = 0; i < length, n < length; i--, n++) {
+      returnedArray[n] = array[i];
+    }
+
+    for (let x = 0; x < length; x++) {
+      array[x] = returnedArray[x];
+    }
+
+    return array;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '1. It should reverse the order of array elements.': function() {
+      let array = ['a', 'b', 'c']
+      reverse(array);
+      eq(array[0], 'c');
+      eq(array[1], 'b');
+      eq(array[2], 'a');
+    },
+    '2. It should return the reversed array.': function() {
+      let array = [1, 2, 3]
+      const result = reverse(array);
+      eq(result.toString(), [3, 2, 1].toString());
+    },
+    '3. It should not modify the length of the array.': function() {
+      let array = [1, 2, 3]
+      reverse(array);
+      eq(array.length, 3);
+    },
+    '4. If array is empty, it should return that empty array.': function() {
+      const result = reverse([]);
+      eq(result.toString(), [].toString());
+    },
+  });
+</script>
