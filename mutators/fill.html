@@ -1,0 +1,124 @@
+<script src="../simpletest.js"></script>
+<script>
+  // FUNCTION SIGNATURE
+  //     fill(array, fillValue[, start[, end]])
+
+  // PARAMETERS:
+  //     fillValue
+  //     start - optional
+  //     end - optional
+
+  // RETURN VALUE
+  //     returns the modified array
+
+  /* APPLICATION CODE */
+  function fill(array, fillValue, start, end) {
+    let length = array.length;
+    let startIndex;
+    let endIndex;
+
+    if (length === 0) {
+      return array;
+    }
+
+    // `start` conditions, with no `end`
+    if (start < 0) {
+      startIndex = start + length >= 0 ? start + length : 0;
+    } else {
+      startIndex = start ? start : 0;
+    }
+
+    // `end` conditions, given that `start` is valid
+    // endIndex = end ? end : length;
+    if (end < 0) {
+      endIndex = end + length > 0 ? end + length : 0;
+    } else {
+      endIndex = end ? end : length;
+    }
+
+    for (let i = startIndex; i < endIndex; i++) {
+      array[i] = fillValue;
+    }
+    return array;
+  }
+
+  /* TESTING CODE */
+  tests({
+    '01. If no start, it should overwrite every array element with fillValue.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'D');
+      eq(array[0], 'D');
+      eq(array[1], 'D');
+      eq(array[2], 'D');
+    },
+    '02. If start >= 0 and start < array.length, it should overwrite every array element from position start to the end with fillValue.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'D', 1);
+      eq(array.toString(), ['a', 'D', 'D'].toString());
+    },
+    '03. If start < 0 and (start + array.length) >= 0, it should overwrite every array element from position (start + array.length) to the end with fillValue.': function() {
+      let array = ['a', 'b', 'c', 'd'];
+      fill(array, 'E', -2);
+      eq(array.toString(), ['a', 'b', 'E', 'E'].toString());
+    },
+    '04. If start < 0 and (array.length + start) < 0, it should overwrite every array element with fillValue.': function() {
+      let array = ['a', 'b', 'c', 'd'];
+      fill(array, 'E', -5);
+      eq(array.toString(), ['E', 'E', 'E', 'E'].toString());
+    },
+    '05. If start >= array.length, it should return the unmodified array.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'E', 3);
+      eq(array.toString(), ['a', 'b', 'c'].toString());
+    },
+    '06. If end, it should overwrite every array element from position start to position (end - 1).': function() {
+      let array = ['a', 'b', 'c', 'd'];
+      fill(array, 'E', 1, 3);
+      eq(array.toString(), ['a', 'E', 'E', 'd'].toString());
+    },
+    '07. If end < 0 and (end + array.length) > 0, it should overwrite every array element from position start to position ((end + array.length) - 1).': function() {
+      let array = ['a', 'b', 'c', 'd'];
+      fill(array, 'E', 1, -2);
+      eq(array.toString(), ['a', 'E', 'c', 'd'].toString());
+    },
+    '08. If end < 0 and (end + array.length) <= 0, it should return the unmodified array.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'E', 1, -5);
+      eq(array.toString(), ['a', 'b', 'c'].toString());
+    },
+    '09. If start === end, it should return the unmodified array too.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'E', 2, 2);
+      eq(array.toString(), ['a', 'b', 'c'].toString());
+    },
+    '10. If no fillValue, it should set the value of every array element to undefined.': function() {
+      let array = ['a', 'b'];
+      fill(array);
+      eq(array[0], undefined);
+      eq(array[1], undefined);
+    },
+    '11. If fillValue is a referenced object, it should overwrite array elements with references to that object.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, {name: 'Object 1'}, 1, 3);
+      eq(array[1].name, 'Object 1');
+      eq(array[2].name, 'Object 1');
+    },
+    '12. It should actually return the modified array.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'hello', 1, 2);
+      eq(array[0], 'a');
+      eq(array[1], 'hello');
+      eq(array[2], 'c');
+    },
+    '13. It should not modify the array length.': function() {
+      let array = ['a', 'b', 'c'];
+      fill(array, 'hello', 1, 2);
+      eq(array.length, 3);
+    },
+    '14. If array is empty, it should return that empty array.': function() {
+      let array = [];
+      fill(array, 'hello', 1, 3);
+      eq(array.length, 0);
+    },
+  });
+</script>
