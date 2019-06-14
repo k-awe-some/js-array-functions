@@ -30,9 +30,9 @@ Mutators
 ``` console
 Array.prototype.push()
 Array.prototype.pop()
-Array.prototype.shift() - to be added
-Array.prototype.unshift() - to be added
-Array.prototype.fill() - to be added
+Array.prototype.shift()
+Array.prototype.unshift()
+Array.prototype.fill()
 Array.prototype.reverse() - to be added
 Array.prototype.copyWithin() - to be added
 Array.prototype.sort() - to be added
