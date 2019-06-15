@@ -1,6 +1,6 @@
 # Javascript Array Methods Recreations
 
-This project is a work-in-progress building and testing series of functions that imitate the established behaviours of Javascript array methods using [Joe Walnes's unit testing library](https://github.com/joewalnes/jstinytest). Taking the Test-Driven Development (TDD) approach, each test makes sure the re-created function satisfies the requirements of the corresponding native JS method.
+Part of the [Watch and Code®](https://watchandcode.com/) advanced curriculum, this project is a work-in-progress building and testing series of functions that imitate the established behaviours of Javascript array methods based on [Joe Walnes's unit testing library](https://github.com/joewalnes/jstinytest). Taking the Test-Driven Development (TDD) approach, each test makes sure the re-created function satisfies the requirements of the corresponding native JS method.
 
 ## List of methods tested (work-in-progress)
 Iterators
@@ -33,15 +33,18 @@ Array.prototype.pop()
 Array.prototype.shift()
 Array.prototype.unshift()
 Array.prototype.fill()
-Array.prototype.reverse() - to be added
+Array.prototype.reverse()
 Array.prototype.copyWithin() - to be added
 Array.prototype.sort() - to be added
 Array.prototype.splice() - to be added
 ```
 
 ## Visuals
-https://github.com/k-awe-some/js-array-functions/blob/master/screenshots/result_successes.JPG?raw=true
-https://github.com/k-awe-some/js-array-functions/blob/master/screenshots/result_failures.JPG?raw=true
+Success sample
+![](screenshots/result_successes.JPG)
+
+Failure sample
+![](screenshots/result_failures.JPG)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
